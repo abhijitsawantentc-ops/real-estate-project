@@ -32,11 +32,13 @@ public static class PlatformStatuses
     public const string InterestConverted = "converted";
     public const string InterestClosed = "closed";
 
+    public const string BidPendingAdmin = "pending_admin";
     public const string BidDraft = "draft";
     public const string BidSent = "sent";
     public const string BidViewed = "viewed";
     public const string BidAccepted = "accepted";
     public const string BidRejected = "rejected";
+    public const string BidRejectedByAdmin = "rejected_by_admin";
     public const string BidExpired = "expired";
 
     public const string TransactionInitiated = "initiated";
@@ -64,6 +66,7 @@ public class Profile
     public Agent? Agent { get; set; }
     public ICollection<AuditLog> AuditLogs { get; set; } = new List<AuditLog>();
     public ICollection<CustomerInterest> Interests { get; set; } = new List<CustomerInterest>();
+    public ICollection<Bid> SubmittedBids { get; set; } = new List<Bid>();
     public ICollection<PlatformNotification> Notifications { get; set; } = new List<PlatformNotification>();
 }
 
@@ -93,10 +96,13 @@ public class PlatformProperty
     [MaxLength(60)] public string PropertyType { get; set; } = string.Empty;
     [MaxLength(30)] public string ListingType { get; set; } = string.Empty;
     public decimal Price { get; set; }
+    public decimal? NegotiablePrice { get; set; }
     [MaxLength(300)] public string Address { get; set; } = string.Empty;
+    [MaxLength(160)] public string? Locality { get; set; }
     [MaxLength(100)] public string City { get; set; } = string.Empty;
     [MaxLength(100)] public string State { get; set; } = string.Empty;
     [MaxLength(20)] public string? Pincode { get; set; }
+    [MaxLength(2048)] public string? LocationUrl { get; set; }
     public decimal? Latitude { get; set; }
     public decimal? Longitude { get; set; }
     public int? Bedrooms { get; set; }
@@ -105,6 +111,13 @@ public class PlatformProperty
     [MaxLength(30)] public string? AreaUnit { get; set; }
     [MaxLength(30)] public string Status { get; set; } = PlatformStatuses.PropertyDraft;
     public bool AdminApproved { get; set; }
+    public bool ShowPhotos { get; set; } = true;
+    public bool ShowAskingPrice { get; set; } = true;
+    public bool ShowNegotiablePrice { get; set; } = false;
+    public bool ShowExactAddress { get; set; } = true;
+    public bool ShowDescription { get; set; } = true;
+    public bool ShowSellerContact { get; set; } = false;
+    public string? AdminComment { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? PublishedAt { get; set; }
@@ -148,15 +161,21 @@ public class Bid
     public Guid Id { get; set; } = Guid.NewGuid();
     public Guid PropertyId { get; set; }
     public Guid AgentId { get; set; }
+    public Guid? BuyerId { get; set; }
     public Guid? CustomerInterestId { get; set; }
-    public bool CreatedByAdmin { get; set; } = true;
+    public bool CreatedByAdmin { get; set; } = false;
+    public decimal OriginalAmount { get; set; }
     public decimal Amount { get; set; }
+    public bool IsModifiedByAdmin { get; set; }
+    public string? AdminNotes { get; set; }
+    public string? BuyerMessage { get; set; }
     public string? Message { get; set; }
-    [MaxLength(30)] public string Status { get; set; } = PlatformStatuses.BidDraft;
+    [MaxLength(30)] public string Status { get; set; } = PlatformStatuses.BidPendingAdmin;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public PlatformProperty? Property { get; set; }
     public Agent? Agent { get; set; }
+    public Profile? Buyer { get; set; }
     public CustomerInterest? CustomerInterest { get; set; }
     public ICollection<PropertyTransaction> Transactions { get; set; } = new List<PropertyTransaction>();
 }

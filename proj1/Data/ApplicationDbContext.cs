@@ -16,6 +16,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<PlatformNotification> Notifications => Set<PlatformNotification>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
 
+    //using chatgpt 
+    public DbSet<CustomerProperty> CustomerProperties { get; set; }
+
+    public DbSet<CustomerPropertyImage> CustomerPropertyImages { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Profile>(entity =>
@@ -24,6 +29,12 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.HasKey(x => x.Id);
             entity.HasIndex(x => x.Email).IsUnique();
             entity.HasOne(x => x.Agent).WithOne(x => x.Profile).HasForeignKey<Agent>(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
+            //using chat
+            modelBuilder.Entity<CustomerPropertyImage>()
+            .HasOne(x => x.CustomerProperty)
+            .WithMany(x => x.Images)
+            .HasForeignKey(x => x.CustomerPropertyId)
+            .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<Agent>(entity =>
@@ -39,6 +50,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.ToTable("properties");
             entity.HasKey(x => x.Id);
             entity.Property(x => x.Price).HasPrecision(14, 2);
+            entity.Property(x => x.NegotiablePrice).HasPrecision(14, 2);
             entity.Property(x => x.Area).HasPrecision(12, 2);
             entity.Property(x => x.Latitude).HasPrecision(9, 6);
             entity.Property(x => x.Longitude).HasPrecision(9, 6);
@@ -68,8 +80,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.ToTable("bids");
             entity.HasKey(x => x.Id);
             entity.Property(x => x.Amount).HasPrecision(14, 2);
+            entity.Property(x => x.OriginalAmount).HasPrecision(14, 2);
             entity.HasOne(x => x.Property).WithMany(x => x.Bids).HasForeignKey(x => x.PropertyId).OnDelete(DeleteBehavior.Restrict);
             entity.HasOne(x => x.Agent).WithMany().HasForeignKey(x => x.AgentId).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(x => x.Buyer).WithMany(p => p.SubmittedBids).HasForeignKey(x => x.BuyerId).OnDelete(DeleteBehavior.Restrict);
             entity.HasOne(x => x.CustomerInterest).WithMany(x => x.Bids).HasForeignKey(x => x.CustomerInterestId).OnDelete(DeleteBehavior.SetNull);
         });
 

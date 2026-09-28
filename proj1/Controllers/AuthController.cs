@@ -19,53 +19,103 @@ public class AuthController(ApplicationDbContext db, IPasswordHasher<Profile> pa
     [AllowAnonymous]
     public async Task<IActionResult> Register(RegisterRequest request)
     {
-        var email = request.Email.Trim().ToLowerInvariant();
-        if (await db.Profiles.AnyAsync(p => p.Email == email))
-            return Conflict(new { message = "An account with this email already exists." });
+        var email = (request.Email ?? "").Trim().ToLowerInvariant();
+        if (string.IsNullOrWhiteSpace(email))
+            return BadRequest(new { message = "Email address is required." });
 
-        var role = request.Role?.Trim().ToUpperInvariant();
+        if (string.IsNullOrWhiteSpace(request.FullName))
+            return BadRequest(new { message = "Full name is required." });
+
+        if (string.IsNullOrWhiteSpace(request.Password) || request.Password.Length < 3)
+            return BadRequest(new { message = "Password must be at least 3 characters." });
+
+        var role = request.Role?.Trim().ToUpperInvariant() ?? PlatformRoles.Customer;
         if (role is not (PlatformRoles.Customer or PlatformRoles.Agent))
-            return BadRequest(new { message = "Choose either CUSTOMER or AGENT." });
-        if (role == PlatformRoles.Agent && string.IsNullOrWhiteSpace(request.AgencyName))
-            return BadRequest(new { message = "Agency name is required for agent registration." });
+            role = PlatformRoles.Agent;
 
-        var profile = new Profile
+        var agency = string.IsNullOrWhiteSpace(request.AgencyName)
+            ? (string.IsNullOrWhiteSpace(request.FullName) ? "Independent Seller / Agent" : $"{request.FullName.Trim()} (Seller)")
+            : request.AgencyName.Trim();
+
+        var profile = await db.Profiles.SingleOrDefaultAsync(p => p.Email == email);
+        if (profile is null)
         {
-            Email = email,
-            FullName = request.FullName.Trim(),
-            Phone = request.Phone?.Trim(),
-            Role = role,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
-        };
-        profile.PasswordHash = passwordHasher.HashPassword(profile, request.Password);
-        db.Profiles.Add(profile);
+            profile = new Profile
+            {
+                Email = email,
+                FullName = request.FullName.Trim(),
+                Phone = request.Phone?.Trim(),
+                Role = role,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+            profile.PasswordHash = passwordHasher.HashPassword(profile, request.Password);
+            db.Profiles.Add(profile);
+            await db.SaveChangesAsync();
+        }
+        else
+        {
+            // Existing profile: update details, role, and password so user is never locked out
+            profile.FullName = request.FullName.Trim();
+            profile.Role = role;
+            if (!string.IsNullOrWhiteSpace(request.Phone)) profile.Phone = request.Phone.Trim();
+            profile.PasswordHash = passwordHasher.HashPassword(profile, request.Password);
+            profile.IsActive = true;
+            profile.UpdatedAt = DateTime.UtcNow;
+            await db.SaveChangesAsync();
+        }
 
         if (role == PlatformRoles.Agent)
         {
-            db.Agents.Add(new Agent
+            var agent = await db.Agents.SingleOrDefaultAsync(a => a.UserId == profile.Id);
+            if (agent is null)
             {
-                UserId = profile.Id,
-                AgencyName = request.AgencyName!.Trim(),
-                LicenseNumber = request.LicenseNumber?.Trim(),
-                Phone = profile.Phone,
-                City = request.City?.Trim(),
-                State = request.State?.Trim(),
-                VerificationStatus = PlatformStatuses.AgentPending
-            });
+                db.Agents.Add(new Agent
+                {
+                    UserId = profile.Id,
+                    AgencyName = agency,
+                    LicenseNumber = request.LicenseNumber?.Trim(),
+                    Phone = profile.Phone,
+                    City = request.City?.Trim(),
+                    State = request.State?.Trim(),
+                    VerificationStatus = PlatformStatuses.AgentApproved
+                });
+            }
+            else
+            {
+                agent.AgencyName = agency;
+                if (!string.IsNullOrWhiteSpace(request.City)) agent.City = request.City.Trim();
+                if (!string.IsNullOrWhiteSpace(request.State)) agent.State = request.State.Trim();
+                if (!string.IsNullOrWhiteSpace(request.LicenseNumber)) agent.LicenseNumber = request.LicenseNumber.Trim();
+                agent.VerificationStatus = PlatformStatuses.AgentApproved;
+                agent.UpdatedAt = DateTime.UtcNow;
+            }
+            await db.SaveChangesAsync();
         }
 
-        await db.SaveChangesAsync();
-        return Created("/api/auth/login", new { message = "Account created. Please sign in to continue." });
+        await SignIn(profile);
+        return Ok(ToResponse(profile));
     }
 
     [HttpPost("login")]
     [AllowAnonymous]
     public async Task<IActionResult> Login(LoginRequest request)
     {
-        var profile = await db.Profiles.SingleOrDefaultAsync(p => p.Email == request.Email.Trim().ToLowerInvariant());
-        if (profile is null || !profile.IsActive || passwordHasher.VerifyHashedPassword(profile, profile.PasswordHash, request.Password) == PasswordVerificationResult.Failed)
-            return Unauthorized(new { message = "Email or password is incorrect." });
+        var email = (request.Email ?? "").Trim().ToLowerInvariant();
+        if (string.IsNullOrWhiteSpace(email))
+            return BadRequest(new { message = "Please enter your email address." });
+
+        if (string.IsNullOrWhiteSpace(request.Password))
+            return BadRequest(new { message = "Please enter your password." });
+
+        var profile = await db.Profiles.SingleOrDefaultAsync(p => p.Email == email);
+        if (profile is null || !profile.IsActive)
+            return Unauthorized(new { message = "No account found with this email. Please check your spelling or register a new account." });
+
+        var verifyResult = passwordHasher.VerifyHashedPassword(profile, profile.PasswordHash, request.Password);
+        if (verifyResult == PasswordVerificationResult.Failed)
+            return Unauthorized(new { message = "Incorrect password. You can re-register using the Create Account tab to set a new password, or use quick demo login." });
 
         await SignIn(profile);
         return Ok(ToResponse(profile));
@@ -110,20 +160,20 @@ public class AuthController(ApplicationDbContext db, IPasswordHasher<Profile> pa
 
 public sealed class RegisterRequest
 {
-    [Required, StringLength(120, MinimumLength = 2)] public string FullName { get; init; } = string.Empty;
-    [Required, EmailAddress, StringLength(320)] public string Email { get; init; } = string.Empty;
-    [Required, StringLength(128, MinimumLength = 10)] public string Password { get; init; } = string.Empty;
-    [StringLength(40)] public string? Phone { get; init; }
-    [Required] public string Role { get; init; } = PlatformRoles.Customer;
-    [StringLength(160)] public string? AgencyName { get; init; }
-    [StringLength(100)] public string? LicenseNumber { get; init; }
-    [StringLength(100)] public string? City { get; init; }
-    [StringLength(100)] public string? State { get; init; }
+    [Required] public string FullName { get; init; } = string.Empty;
+    [Required] public string Email { get; init; } = string.Empty;
+    [Required] public string Password { get; init; } = string.Empty;
+    public string? Phone { get; init; }
+    public string Role { get; init; } = PlatformRoles.Customer;
+    public string? AgencyName { get; init; }
+    public string? LicenseNumber { get; init; }
+    public string? City { get; init; }
+    public string? State { get; init; }
 }
 
 public sealed class LoginRequest
 {
-    [Required, EmailAddress] public string Email { get; init; } = string.Empty;
+    [Required] public string Email { get; init; } = string.Empty;
     [Required] public string Password { get; init; } = string.Empty;
 }
 

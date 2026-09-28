@@ -1,16 +1,4 @@
-﻿(async function initialize() {
-  try {
-    const response = await fetch(`${api.auth}/me`, { credentials: 'same-origin' });
-    if (response.ok) {
-      profile = await response.json();
-      setAuthenticatedView(true);
-      await refreshDashboard();
-    } else {
-      setAuthenticatedView(false);
-    }
-  }
-  catch { setAuthenticatedView(false); }
-})();{
+﻿{
   "$schema": "https://json.schemastore.org/launchsettings.json",
   "profiles": {
     "http": {

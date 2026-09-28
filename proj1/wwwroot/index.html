@@ -4,15 +4,15 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#102b25" />
-  <title>Haven | Property Platform</title>
+  <title>Horizon Realty | Property &amp; Bidding Platform</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="/" aria-label="Haven home"><span class="brand-mark">H</span><span>haven<span class="brand-dot">.</span></span></a>
+    <a class="brand" href="/" aria-label="Horizon Realty home"><span class="brand-mark">H</span><span>Horizon Realty<span class="brand-dot">.</span></span></a>
     <div class="topbar-right">
       <span id="identity" class="identity hidden"></span>
       <button id="logoutButton" class="button button-quiet hidden" type="button">Sign out</button>
@@ -22,10 +22,14 @@
   <main class="page-shell">
     <section id="authView" class="auth-layout">
       <div class="auth-intro">
-        <div class="eyebrow"><span class="eyebrow-dot"></span> A smarter property network</div>
-        <h1>Property business,<br /><span>built on trust.</span></h1>
-        <p>One connected workspace for customers, verified agents, and the admins who keep every listing and offer moving.</p>
-        <div class="trust-points"><span>01&nbsp; Approved listings</span><span>02&nbsp; Clear offers</span><span>03&nbsp; Tracked transactions</span></div>
+        <div class="eyebrow"><span class="eyebrow-dot"></span> Controlled Real Estate Marketplace</div>
+        <h1>Property business,<br /><span>moderated with trust.</span></h1>
+        <p>A trusted multi-party network where sellers post listings with floor prices, admins curate field visibility and vet buyer bids, and buyers make verified offers.</p>
+        <div class="trust-points">
+          <span>01&nbsp; Admin-Approved Listings</span>
+          <span>02&nbsp; Granular Field Privacy</span>
+          <span>03&nbsp; Mediated Buyer Bidding</span>
+        </div>
       </div>
       <div class="auth-card">
         <div class="auth-tabs" role="tablist">
@@ -34,94 +38,502 @@
         </div>
         <div id="authFeedback" class="feedback hidden" role="status"></div>
         <form id="loginForm" class="auth-form">
-          <h2>Welcome back</h2><p class="muted">Sign in to your property workspace.</p>
+          <h2>Welcome back</h2>
+          <p class="muted">Sign in to your property &amp; bidding workspace.</p>
           <label>Email address<input name="email" type="email" autocomplete="email" placeholder="you@example.com" required /></label>
           <label>Password<input name="password" type="password" autocomplete="current-password" required /></label>
           <button class="button button-primary button-wide" type="submit">Sign in <span aria-hidden="true">→</span></button>
+          
+          <div class="quick-credentials">
+            <span class="quick-title">Quick Demo Sign-In:</span>
+            <div class="quick-buttons">
+              <button type="button" class="button button-small button-outline" data-quick-login="seller">🏠 Seller / Agent</button>
+              <button type="button" class="button button-small button-outline" data-quick-login="buyer">🔍 Buyer</button>
+              <button type="button" class="button button-small button-outline" data-quick-login="admin">🛡️ Admin</button>
+            </div>
+          </div>
         </form>
         <form id="registerForm" class="auth-form hidden">
-          <h2>Join the network</h2><p class="muted">Create a customer or agent account.</p>
+          <h2>Join the network</h2>
+          <p class="muted">Register as a Property Agent/Seller or Buyer.</p>
           <label>Full name<input name="fullName" type="text" maxlength="120" autocomplete="name" required /></label>
           <label>Email address<input name="email" type="email" maxlength="320" autocomplete="email" required /></label>
-          <label>Password<input name="password" type="password" minlength="10" autocomplete="new-password" required /></label>
-          <label>Account type<select name="role" id="registerRole"><option value="CUSTOMER">Customer</option><option value="AGENT">Property agent</option></select></label>
-          <div id="agentFields" class="hidden">
-            <label>Agency name<input name="agencyName" type="text" maxlength="160" /></label>
-            <label>License number<input name="licenseNumber" type="text" maxlength="100" /></label>
-            <div class="form-row"><label>City<input name="city" type="text" maxlength="100" /></label><label>State<input name="state" type="text" maxlength="100" /></label></div>
+          <label>Password<input name="password" type="password" minlength="3" autocomplete="new-password" required /></label>
+          <label>Account type
+            <select name="role" id="registerRole">
+              <option value="AGENT">Property Agent / Seller</option>
+              <option value="CUSTOMER">Buyer (Customer)</option>
+            </select>
+          </label>
+          <div id="agentFields">
+            <label>Agency or Firm Name (Optional)<input name="agencyName" type="text" maxlength="160" placeholder="e.g. Apex Realty / Independent" /></label>
+            <label>License number (Optional)<input name="licenseNumber" type="text" maxlength="100" placeholder="e.g. RE-98402" /></label>
+            <div class="form-row">
+              <label>City<input name="city" type="text" maxlength="100" placeholder="San Jose" /></label>
+              <label>State<input name="state" type="text" maxlength="100" placeholder="CA" /></label>
+            </div>
           </div>
           <label>Phone<input name="phone" type="tel" maxlength="40" autocomplete="tel" /></label>
           <button class="button button-primary button-wide" type="submit">Create account <span aria-hidden="true">→</span></button>
-          <p class="form-note">Agent accounts need admin verification before listings can be posted.</p>
+          <p class="form-note">Agent/Seller accounts are ready immediately to submit listings for Admin review &amp; field visibility configuration.</p>
         </form>
       </div>
     </section>
 
     <section id="dashboardView" class="hidden">
       <div class="dashboard-heading">
-        <div><div id="roleEyebrow" class="eyebrow"></div><h1 id="welcomeTitle">Your workspace</h1><p id="welcomeText" class="muted"></p></div>
+        <div>
+          <div id="roleEyebrow" class="eyebrow"></div>
+          <h1 id="welcomeTitle">Your workspace</h1>
+          <p id="welcomeText" class="muted"></p>
+        </div>
         <button id="refreshButton" class="button button-outline" type="button"><span aria-hidden="true">↻</span> Refresh</button>
       </div>
       <div id="feedback" class="feedback hidden" role="status"></div>
-      <section class="panel notifications-panel"><div class="section-heading"><div><div class="eyebrow">Updates</div><h2>Notifications</h2></div><span id="notificationCount" class="count-pill">0</span></div><div id="notifications" class="notification-list"></div></section>
-      <details class="panel status-reference" open>
-        <summary><span><span class="eyebrow">Workflow reference</span><strong>Platform status values</strong></span><span class="summary-toggle">−</span></summary>
-        <div class="status-guide">
-          <div><strong>Agent verification</strong><span class="status-list"><code>pending</code><code>approved</code><code>rejected</code><code>suspended</code></span></div>
-          <div><strong>Property</strong><span class="status-list"><code>draft</code><code>pending_approval</code><code>published</code><code>under_offer</code><code>sold</code><code>rejected</code><code>inactive</code></span></div>
-          <div><strong>Customer interest</strong><span class="status-list"><code>new</code><code>under_review</code><code>contacted</code><code>approved</code><code>rejected</code><code>converted</code><code>closed</code></span></div>
-          <div><strong>Bid</strong><span class="status-list"><code>draft</code><code>sent</code><code>viewed</code><code>accepted</code><code>rejected</code><code>expired</code></span></div>
-          <div><strong>Transaction</strong><span class="status-list"><code>initiated</code><code>admin_review</code><code>negotiation</code><code>agent_review</code><code>approved</code><code>agreement_pending</code><code>completed</code><code>cancelled</code></span></div>
-        </div>
-      </details>
 
+      <!-- Notifications -->
+      <section class="panel notifications-panel">
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">Live Activity</div>
+            <h2>Notifications &amp; Alerts</h2>
+          </div>
+          <span id="notificationCount" class="count-pill">0</span>
+        </div>
+        <div id="notifications" class="notification-list"></div>
+      </section>
+
+      <!-- Customer / Buyer Dashboard -->
       <section id="customerDashboard" class="role-view hidden">
-        <div class="section-heading section-spaced"><div><div class="eyebrow">The collection</div><h2>Approved properties</h2><p class="muted">For your privacy, customer listings show only the photo, address, and price.</p></div></div>
-        <div id="customerProperties" class="property-grid"></div>
-        <section class="panel"><div class="section-heading"><div><div class="eyebrow">Your activity</div><h2>My interests</h2></div></div><div id="customerInterests" class="table-wrap"></div></section>
-        <section class="panel"><div class="section-heading"><div><div class="eyebrow">Offer progress</div><h2>My offers</h2></div></div><div id="customerBids" class="table-wrap"></div></section>
-        <section class="panel"><div class="section-heading"><div><div class="eyebrow">Next steps</div><h2>My transactions</h2></div></div><div id="customerTransactions" class="table-wrap"></div></section>
-      </section>
-
-      <section id="agentDashboard" class="role-view hidden">
-        <div class="agent-grid">
-          <section class="panel"><div class="section-heading"><div><div class="eyebrow">New listing</div><h2>Submit a property</h2><p class="muted">Every new listing is reviewed by an admin before customers can see it.</p></div></div>
-            <form id="propertyForm" class="platform-form">
-              <div class="form-row"><label>Property title<input name="title" maxlength="180" required /></label><label>Property type<input name="propertyType" maxlength="60" placeholder="Apartment, house…" required /></label></div>
-              <div class="form-row"><label>Listing type<select name="listingType" required><option value="SALE">For sale</option><option value="RENT">For rent</option></select></label><label>Price<input name="price" type="number" min="0.01" step="0.01" required /></label></div>
-              <label>Street address<input name="address" maxlength="300" required /></label>
-              <div class="form-row"><label>City<input name="city" maxlength="100" required /></label><label>State<input name="state" maxlength="100" required /></label><label>Postal code<input name="pincode" maxlength="20" /></label></div>
-              <label>Description<textarea name="description" rows="3"></textarea></label>
-              <div class="form-row"><label>Bedrooms<input name="bedrooms" type="number" min="0" max="100" /></label><label>Bathrooms<input name="bathrooms" type="number" min="0" max="100" /></label><label>Area<input name="area" type="number" min="0" step="0.01" /></label><label>Area unit<input name="areaUnit" maxlength="30" placeholder="sq ft" /></label></div>
-              <label>Cover photo URL<input name="imageUrl" type="url" maxlength="2048" placeholder="https://…" /></label>
-              <div class="form-actions"><button class="button button-outline" type="submit" data-property-status="draft">Save draft</button><button class="button button-primary" type="submit" data-property-status="pending_approval">Submit for approval <span aria-hidden="true">→</span></button></div>
-            </form>
-          </section>
-          <section class="panel"><div class="section-heading"><div><div class="eyebrow">Offers to review</div><h2>Customer bids</h2></div></div><div id="agentBids" class="stack-list"></div></section>
+        <div class="section-heading section-spaced">
+          <div>
+            <div class="eyebrow">Marketplace</div>
+            <h2>Approved Property Listings</h2>
+            <p class="muted">All listings below have been approved by Admin with privacy controls applied. You can submit bids directly on any property.</p>
+          </div>
         </div>
-        <section class="panel"><div class="section-heading"><div><div class="eyebrow">Your inventory</div><h2>My properties</h2></div></div><div id="agentProperties" class="table-wrap"></div></section>
-        <section class="panel"><div class="section-heading"><div><div class="eyebrow">Customer pipeline</div><h2>Property interests</h2></div></div><div id="agentInterests" class="table-wrap"></div></section>
-        <section class="panel"><div class="section-heading"><div><div class="eyebrow">Progress</div><h2>Transactions</h2></div></div><div id="agentTransactions" class="table-wrap"></div></section>
+        <div id="customerProperties" class="property-grid"></div>
+
+        <section class="panel">
+          <div class="section-heading">
+            <div>
+              <div class="eyebrow">Your Offers</div>
+              <h2>My Bids &amp; Offer Pipeline</h2>
+              <p class="muted">Track bids you placed. All bids undergo Admin review and approval before being presented to the seller.</p>
+            </div>
+          </div>
+          <div id="customerBids" class="table-wrap"></div>
+        </section>
+
+        <section class="panel">
+          <div class="section-heading">
+            <div>
+              <div class="eyebrow">Next steps</div>
+              <h2>My Transactions</h2>
+            </div>
+          </div>
+          <div id="customerTransactions" class="table-wrap"></div>
+        </section>
       </section>
 
+      <!-- Agent / Seller Dashboard -->
+      <section id="agentDashboard" class="role-view hidden">
+        <!-- Agent View Switcher -->
+        <div class="sub-nav-tabs">
+          <button class="sub-nav-tab active" id="agentViewListingsTab" type="button">My Properties &amp; Offers</button>
+          <button class="sub-nav-tab" id="agentViewMarketplaceTab" type="button">Browse Marketplace &amp; Place Bids</button>
+        </div>
+
+        <div id="agentMainView">
+          <div class="agent-grid">
+            <!-- Property Submission Panel -->
+            <section class="panel">
+              <div class="section-heading">
+                <div>
+                  <div class="eyebrow">New Listing</div>
+                  <h2>Post Property for Approval</h2>
+                  <p class="muted">Provide property details, photos, and your confidential negotiable floor price for Admin vetting.</p>
+                </div>
+              </div>
+              <form id="propertyForm" class="platform-form minimalist-form">
+                <div class="form-row">
+                  <label>Property title<input name="title" maxlength="180" placeholder="e.g. Modern Villa with Garden" required /></label>
+                  <label>Property type
+                    <select name="propertyType" required>
+                      <option value="Apartment">Apartment</option>
+                      <option value="Villa">Villa / Bungalow</option>
+                      <option value="Penthouse">Penthouse</option>
+                      <option value="Independent House">Independent House</option>
+                      <option value="Commercial">Commercial Space</option>
+                      <option value="Plot / Land">Plot / Land</option>
+                    </select>
+                  </label>
+                  <label>Listing type
+                    <select name="listingType" required>
+                      <option value="SALE">For sale</option>
+                      <option value="RENT">For rent</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="form-row">
+                  <label>Asking price ($)<input name="price" type="number" min="1" step="1" placeholder="e.g. 750000" required /></label>
+                  <label>Negotiable up to ($) <span class="label-hint">(Confidential floor for Admin)</span>
+                    <input name="negotiablePrice" type="number" min="1" step="1" placeholder="e.g. 700000" />
+                  </label>
+                </div>
+                <div class="form-row">
+                  <label style="flex: 2;">Street address<input name="address" maxlength="300" placeholder="e.g. 742 Evergreen Terrace" required /></label>
+                  <label style="flex: 1;">City<input name="city" maxlength="100" placeholder="San Jose" required /></label>
+                  <label style="flex: 1;">State<input name="state" maxlength="100" placeholder="CA" required /></label>
+                </div>
+                <label>Description <span class="label-hint">(Optional)</span>
+                  <textarea name="description" rows="2" placeholder="Brief summary of highlights, amenities, and key selling points…"></textarea>
+                </label>
+
+                <!-- Modern Multi-Image Upload Dropzone -->
+                <div class="form-group upload-section">
+                  <label>Upload Property Photos <span class="label-hint">(Select multiple images)</span></label>
+                  <div class="upload-dropzone" id="uploadDropZone">
+                    <input type="file" id="propertyImagesInput" name="images" accept="image/png, image/jpeg, image/webp" multiple />
+                    <div class="upload-dropzone-content">
+                      <div class="upload-icon">📸</div>
+                      <div class="upload-text">
+                        <strong>Click to choose photos</strong> or drag &amp; drop files here
+                        <span class="upload-sub">Supports PNG, JPG, or WebP up to 10MB each</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="imagePreviewContainer" class="image-preview-container hidden">
+                    <div class="preview-header">
+                      <span>Selected Photos (<span id="previewCount">0</span>):</span>
+                      <button type="button" class="text-button danger-text" id="clearImagesBtn">Clear all</button>
+                    </div>
+                    <div id="imagePreviewList" class="image-preview-list"></div>
+                  </div>
+                </div>
+
+                <div class="form-actions">
+                  <button class="button button-outline" type="submit" data-property-status="draft">Save draft</button>
+                  <button class="button button-primary" type="submit" data-property-status="pending_approval">Submit for Admin Approval <span aria-hidden="true">→</span></button>
+                </div>
+              </form>
+            </section>
+
+            <!-- Incoming Bids Panel -->
+            <section class="panel">
+              <div class="section-heading">
+                <div>
+                  <div class="eyebrow">Incoming Offers</div>
+                  <h2>Offers Approved by Admin</h2>
+                  <p class="muted">These bids have been vetted and forwarded by Admin. Review the amount and accept or decline.</p>
+                </div>
+              </div>
+              <div id="agentBids" class="stack-list"></div>
+            </section>
+          </div>
+
+          <!-- Top Market Properties Window (for Seller who is also a Buyer) -->
+          <section class="panel highlight-panel top-market-panel">
+            <div class="section-heading">
+              <div>
+                <div class="eyebrow">Marketplace Window · Buyer Opportunities</div>
+                <h2>Top Featured Properties to Bid On</h2>
+                <p class="muted">Sellers are buyers too! Explore vetted listings on the Horizon network and place buyer offers directly.</p>
+              </div>
+              <button class="button button-small button-outline" id="agentBrowseAllBtn" type="button">Browse All Listings →</button>
+            </div>
+            <div id="agentTopMarketplaceProperties" class="property-grid top-properties-grid"></div>
+          </section>
+
+          <section class="panel">
+            <div class="section-heading">
+              <div>
+                <div class="eyebrow">Your Inventory</div>
+                <h2>My Properties</h2>
+              </div>
+            </div>
+            <div id="agentProperties" class="table-wrap"></div>
+          </section>
+
+          <section class="panel">
+            <div class="section-heading">
+              <div>
+                <div class="eyebrow">Transactions</div>
+                <h2>Closing Pipeline</h2>
+              </div>
+            </div>
+            <div id="agentTransactions" class="table-wrap"></div>
+          </section>
+        </div>
+
+        <!-- Agent Marketplace View (to bid on other listings) -->
+        <div id="agentMarketplaceView" class="hidden">
+          <div class="section-heading section-spaced">
+            <div>
+              <div class="eyebrow">Agent Network</div>
+              <h2>Browse Properties &amp; Submit Bids</h2>
+              <p class="muted">As a registered agent, you can also place bids on published properties on behalf of your clients or agency.</p>
+            </div>
+          </div>
+          <div id="agentMarketplaceProperties" class="property-grid"></div>
+        </div>
+      </section>
+
+      <!-- Admin Dashboard -->
       <section id="adminDashboard" class="role-view hidden">
         <div class="admin-stats" id="adminStats"></div>
-        <section class="panel"><div class="section-heading"><div><div class="eyebrow">Listing review</div><h2>Properties awaiting approval</h2></div></div><div id="adminProperties" class="table-wrap"></div></section>
+
+        <!-- Properties Pending Approval & Field Visibility Control -->
+        <section class="panel">
+          <div class="section-heading">
+            <div>
+              <div class="eyebrow">Moderation Queue</div>
+              <h2>Properties Awaiting Admin Approval &amp; Field Visibility</h2>
+              <p class="muted">Inspect seller listings, verify asking price &amp; floor negotiable price, and configure which fields buyers and other agents are allowed to see.</p>
+            </div>
+          </div>
+          <div id="adminPendingProperties" class="table-wrap"></div>
+        </section>
+
+        <!-- Buyer Bids Pending Admin Review & Modification -->
+        <section class="panel highlight-panel">
+          <div class="section-heading">
+            <div>
+              <div class="eyebrow">Clearinghouse &amp; Negotiation</div>
+              <h2>Buyer Bids Awaiting Admin Approval / Modification</h2>
+              <p class="muted">Review buyer bids against seller asking and confidential negotiable price. You can approve as-is or adjust the offer amount before sending to the seller.</p>
+            </div>
+          </div>
+          <div id="adminPendingBids" class="stack-list"></div>
+        </section>
+
+        <!-- All Platform Listings -->
+        <section class="panel">
+          <div class="section-heading">
+            <div>
+              <div class="eyebrow">Inventory Control</div>
+              <h2>All Platform Listings</h2>
+            </div>
+          </div>
+          <div id="adminProperties" class="table-wrap"></div>
+        </section>
+
         <div class="admin-grid">
-          <section class="panel"><div class="section-heading"><div><div class="eyebrow">Agent onboarding</div><h2>Agent verification</h2></div></div><div id="adminAgents" class="stack-list"></div></section>
-          <section class="panel"><div class="section-heading"><div><div class="eyebrow">Customer pipeline</div><h2>Interests &amp; create bids</h2></div></div>
-            <form id="bidForm" class="platform-form compact-form"><label>Customer interest<select name="customerInterestId" id="interestSelect" required></select></label><label>Offer amount<input name="amount" type="number" min="0.01" step="0.01" required /></label><label>Note<textarea name="message" rows="2"></textarea></label><button class="button button-primary" type="submit">Create agent offer</button></form>
-            <div id="adminInterests" class="table-wrap"></div>
+          <section class="panel">
+            <div class="section-heading">
+              <div>
+                <div class="eyebrow">Agent Onboarding</div>
+                <h2>Agent Verification</h2>
+              </div>
+            </div>
+            <div id="adminAgents" class="stack-list"></div>
+          </section>
+
+          <section class="panel">
+            <div class="section-heading">
+              <div>
+                <div class="eyebrow">Offer History</div>
+                <h2>All Bids Pipeline</h2>
+              </div>
+            </div>
+            <div id="adminBids" class="table-wrap"></div>
           </section>
         </div>
-        <section class="panel"><div class="section-heading"><div><div class="eyebrow">Agent decisions</div><h2>Bid responses</h2></div></div><div id="adminBids" class="table-wrap"></div></section>
-        <section class="panel"><div class="section-heading"><div><div class="eyebrow">Negotiation workflow</div><h2>Transactions</h2></div></div><div id="adminTransactions" class="table-wrap"></div></section>
-        <section class="panel"><div class="section-heading"><div><div class="eyebrow">Access control</div><h2>Platform users</h2></div></div><div id="adminProfiles" class="table-wrap"></div></section>
-        <section class="panel"><div class="section-heading"><div><div class="eyebrow">System history</div><h2>Recent audit activity</h2></div></div><div id="adminAudit" class="table-wrap"></div></section>
+
+        <section class="panel">
+          <div class="section-heading">
+            <div>
+              <div class="eyebrow">Negotiation Workflow</div>
+              <h2>Transactions</h2>
+            </div>
+          </div>
+          <div id="adminTransactions" class="table-wrap"></div>
+        </section>
+
+        <section class="panel">
+          <div class="section-heading">
+            <div>
+              <div class="eyebrow">Access Control</div>
+              <h2>Platform Users</h2>
+            </div>
+          </div>
+          <div id="adminProfiles" class="table-wrap"></div>
+        </section>
+
+        <section class="panel">
+          <div class="section-heading">
+            <div>
+              <div class="eyebrow">System History</div>
+              <h2>Recent Audit Activity</h2>
+            </div>
+          </div>
+          <div id="adminAudit" class="table-wrap"></div>
+        </section>
       </section>
     </section>
   </main>
-  <footer><span>HAVEN PROPERTY NETWORK</span><span>Trusted listings. Clear decisions.</span></footer>
-  <script src="/app.js" defer></script>
+
+  <!-- MODAL: Buyer Submit Bid -->
+  <dialog id="bidModal" class="app-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div>
+          <div class="eyebrow">Submit an Offer</div>
+          <h2 id="bidModalTitle">Place a Bid</h2>
+          <p id="bidModalSub" class="muted"></p>
+        </div>
+        <button type="button" class="modal-close" data-close-modal="bidModal">&times;</button>
+      </div>
+      <form id="submitBidForm">
+        <input type="hidden" name="propertyId" id="bidModalPropertyId" />
+        <div class="modal-summary" id="bidModalSummary"></div>
+        
+        <label>Your Offer Amount ($)
+          <input type="number" name="amount" id="bidModalAmount" min="1" step="1" placeholder="e.g. 485000" required />
+        </label>
+        
+        <label>Message / Offer Terms for Admin &amp; Seller (Optional)
+          <textarea name="message" id="bidModalMessage" rows="3" placeholder="e.g. Pre-approved financing, flexible closing in 30 days…"></textarea>
+        </label>
+
+        <div class="modal-notice">
+          <strong>How it works:</strong> Your bid will be submitted to the platform Administrator for review. Once approved or adjusted by Admin, it will be presented directly to the listing agent/seller.
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="button button-outline" data-close-modal="bidModal">Cancel</button>
+          <button type="submit" class="button button-primary">Submit Bid for Admin Review <span aria-hidden="true">→</span></button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- MODAL: Admin Property Review & Field Visibility Control -->
+  <dialog id="adminListingModal" class="app-modal">
+    <div class="modal-box modal-wide">
+      <div class="modal-header">
+        <div>
+          <div class="eyebrow">Admin Listing Review</div>
+          <h2 id="adminListingTitle">Review Property &amp; Configure Field Visibility</h2>
+          <p class="muted">Choose which fields buyers and other agents are allowed to see on this listing.</p>
+        </div>
+        <button type="button" class="modal-close" data-close-modal="adminListingModal">&times;</button>
+      </div>
+      <form id="adminListingForm">
+        <input type="hidden" name="propertyId" id="adminListingId" />
+        
+        <div class="review-details-grid" id="adminListingPreview"></div>
+
+        <h3 class="subsection-title">Field Visibility Controls for Buyers / Agents</h3>
+        <p class="muted small-text">Fields turned OFF will be hidden or masked when non-admin users browse this listing.</p>
+
+        <div class="visibility-toggles">
+          <label class="toggle-control">
+            <input type="checkbox" name="showPhotos" id="visShowPhotos" checked />
+            <span class="toggle-slider"></span>
+            <span class="toggle-label">
+              <strong>Show Property Photos</strong>
+              <small>Displays property image gallery to buyers</small>
+            </span>
+          </label>
+
+          <label class="toggle-control">
+            <input type="checkbox" name="showAskingPrice" id="visShowAskingPrice" checked />
+            <span class="toggle-slider"></span>
+            <span class="toggle-label">
+              <strong>Show Asking Price</strong>
+              <small>Displays the seller's asking price</small>
+            </span>
+          </label>
+
+          <label class="toggle-control highlight-toggle">
+            <input type="checkbox" name="showNegotiablePrice" id="visShowNegotiablePrice" />
+            <span class="toggle-slider"></span>
+            <span class="toggle-label">
+              <strong>Show Negotiable Floor Price</strong>
+              <small>Keep OFF to protect seller's confidential bottom line; turn ON only if authorized to reveal</small>
+            </span>
+          </label>
+
+          <label class="toggle-control">
+            <input type="checkbox" name="showExactAddress" id="visShowExactAddress" checked />
+            <span class="toggle-slider"></span>
+            <span class="toggle-label">
+              <strong>Show Exact Street Address</strong>
+              <small>If OFF, buyers only see Locality, City &amp; State</small>
+            </span>
+          </label>
+
+          <label class="toggle-control">
+            <input type="checkbox" name="showDescription" id="visShowDescription" checked />
+            <span class="toggle-slider"></span>
+            <span class="toggle-label">
+              <strong>Show Description &amp; Details</strong>
+              <small>Displays the full property description text</small>
+            </span>
+          </label>
+
+          <label class="toggle-control">
+            <input type="checkbox" name="showSellerContact" id="visShowSellerContact" />
+            <span class="toggle-slider"></span>
+            <span class="toggle-label">
+              <strong>Show Seller / Agent Direct Contact</strong>
+              <small>If OFF, buyer inquiries and bids are channeled through Admin</small>
+            </span>
+          </label>
+        </div>
+
+        <label>Admin Comment / Guidance for Seller
+          <textarea name="adminComment" id="adminListingComment" rows="2" placeholder="Optional notes for the agent or listing history…"></textarea>
+        </label>
+
+        <div class="modal-actions">
+          <button type="button" class="button button-outline danger-text" id="adminListingRejectBtn">Reject Listing</button>
+          <button type="submit" class="button button-primary" id="adminListingApproveBtn">Approve &amp; Publish Listing <span aria-hidden="true">→</span></button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- MODAL: Admin Bid Review / Modification -->
+  <dialog id="adminBidModal" class="app-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div>
+          <div class="eyebrow">Admin Bid Clearance</div>
+          <h2>Review &amp; Modify Buyer Bid</h2>
+          <p class="muted">Approve the offer as-is, adjust the amount, or decline before presenting to the seller.</p>
+        </div>
+        <button type="button" class="modal-close" data-close-modal="adminBidModal">&times;</button>
+      </div>
+      <form id="adminBidForm">
+        <input type="hidden" name="bidId" id="adminBidId" />
+        
+        <div class="bid-context-card" id="adminBidContext"></div>
+
+        <label>Adjusted Official Amount to Forward to Seller ($)
+          <input type="number" name="modifiedAmount" id="adminBidModifiedAmount" min="1" step="1" required />
+          <span class="label-hint">As per clearing rules, seller will only see this official approved amount.</span>
+        </label>
+
+        <label>Admin Notes / Rationale (for Seller &amp; Buyer)
+          <textarea name="adminNotes" id="adminBidNotes" rows="2" placeholder="e.g. Adjusted based on buyer financing pre-approval / margin…"></textarea>
+        </label>
+
+        <div class="modal-actions">
+          <button type="button" class="button button-outline danger-text" id="adminBidRejectBtn">Reject Bid</button>
+          <button type="button" class="button button-outline" id="adminBidApproveAsIsBtn">Approve As-Is</button>
+          <button type="submit" class="button button-primary" id="adminBidModifyBtn">Forward Modified Offer <span aria-hidden="true">→</span></button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <footer>
+    <span>HORIZON REALTY NETWORK</span>
+    <span>Seller Listings · Admin Field Moderation · Buyer Bidding</span>
+  </footer>
+
+  <script src="/app.js?v=4.0" defer></script>
 </body>
 </html>
